@@ -22,7 +22,7 @@ Currently, Scala 2.11 and 2.12 are supported.
 
 ## Examples
 
-The [tests](src/test) provide some examples, for the rest check the [documentation project](https://combinators.github.io/).
+The [tests](src/test/scala/org/combinators/templating) provide some examples, for the rest check the [documentation project](https://combinators.github.io/).
 
 ## Help and Contributions
 
