@@ -39,7 +39,23 @@ lazy val root = (Project(id = "templating", base = file(".")))
         "org.scalatest" %% "scalatest" % "3.0.4" % "test",
         "com.github.javaparser" % "javaparser-core" % "3.5.4",
         "org.apache.commons" % "commons-text" % "1.1"
-      )
+      ),
+
+      sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "java-templates",
+      TwirlKeys.templateImports := Seq(),
+      TwirlKeys.templateFormats += ("java" -> "org.combinators.templating.twirl.JavaFormat"),
+      TwirlKeys.templateImports += "org.combinators.templating.twirl.Java",
+
+      TwirlKeys.templateImports += "com.github.javaparser.ast._",
+      TwirlKeys.templateImports += "com.github.javaparser.ast.body._",
+      TwirlKeys.templateImports += "com.github.javaparser.ast.comments._",
+      TwirlKeys.templateImports += "com.github.javaparser.ast.expr._",
+      TwirlKeys.templateImports += "com.github.javaparser.ast.stmt._",
+      TwirlKeys.templateImports += "com.github.javaparser.ast.`type`._",
+
+      sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "python-templates",
+      TwirlKeys.templateFormats += ("py" -> "org.combinators.templating.twirl.PythonFormat"),
+      TwirlKeys.templateImports += "org.combinators.templating.twirl.Python"
     )
 
 

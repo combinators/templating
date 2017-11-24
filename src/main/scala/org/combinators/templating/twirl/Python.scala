@@ -39,6 +39,12 @@ class Python private(elements: immutable.Seq[Python], text: String) extends Buff
     Python(fullText.lines.map(l => s"    $l").mkString("\n"))
   }
 
+  /** Indents everything except the first line in this fragment by 4 spaces. */
+  def indentExceptFirst: Python = {
+    val lines: Seq[String] = fullText.lines.toSeq
+    Python((lines.head +: lines.tail.map(l => s"    $l")).mkString("\n"))
+  }
+
   /** Returns the code of this fragment as a String. */
   def getCode: String = fullText
 }
@@ -47,16 +53,12 @@ class Python private(elements: immutable.Seq[Python], text: String) extends Buff
   * Helper for Python utility methods.
   */
 object Python {
-  /**
-    * Creates a Python fragment with initial content specified.
-    */
+  /** Creates a Python fragment with initial content specified. */
   def apply(text: String): Python = {
     new Python(text)
   }
 
-  /**
-    * Creates a Python fragment with initial content from the given `text` separated by `separator`.
-    */
+  /** Creates a Python fragment with initial content from the given `text` separated by `separator`. */
   def apply(text: Seq[String], separator: String = ";"): Python = {
     apply(text.mkString(separator))
   }
@@ -77,14 +79,10 @@ object PythonFormat extends Format[Python] {
     */
   def escape(text: String): Python = Python(StringEscapeUtils.escapeJava(text))
 
-  /**
-    * Generates an empty Python fragment
-    */
+  /** Generates an empty Python fragment */
   val empty: Python = new Python("")
 
-  /**
-    * Creates an Python Fragment that holds other fragments.
-    */
+  /** Creates an Python fragment that holds other fragments. */
   def fill(elements: immutable.Seq[Python]): Python = new Python(elements)
 
 }

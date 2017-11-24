@@ -35,7 +35,7 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
   def this(text: String) = this(Nil, Formats.safe(text))
   def this(elements: immutable.Seq[Java]) = this(elements, "")
 
-  private lazy val fullText: String = (text +: elements).mkString
+  private lazy val fullText: String = (text +: elements).mkString("\n")
 
   /** Content type of Java */
   val contentType = "text/x-java"
@@ -56,12 +56,10 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
   def expression[T <: Expression](): T = JavaParser.parseExpression[T](fullText)
 
   /** Parses this element as a (potentially qualified) name. */
-  def name(): Name =
-    JavaParser.parseName(fullText)
+  def name(): Name = JavaParser.parseName(fullText)
 
   /** Parses this element as an unqualified name. */
-  def simpleName(): SimpleName =
-    JavaParser.parseExpression[NameExpr](fullText).getName
+  def simpleName(): SimpleName = JavaParser.parseSimpleName(fullText)
 
   /** Parses this element as a (unqualified) name expression. */
   def nameExpression(): NameExpr = expression()
@@ -73,21 +71,15 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
   def classBodyDeclarations(): Seq[BodyDeclaration[_]] =
     JavaParser.parse(s"class C { $fullText }").getTypes.asScala.head.getMembers.asScala
 
-  /**
-    * Parses this element as multiple field declarations.
-    */
+  /** Parses this element as multiple field declarations. */
   def fieldDeclarations(): Seq[FieldDeclaration] =
     classBodyDeclarations().map(_.asInstanceOf[FieldDeclaration])
 
-  /**
-    * Parses this element as multiple method declarations.
-    */
+  /** Parses this element as multiple method declarations. */
   def methodDeclarations(): Seq[MethodDeclaration] =
     classBodyDeclarations().map(_.asInstanceOf[MethodDeclaration])
 
-  /**
-    * Parses this element as multiple constructor declarations.
-    */
+  /** Parses this element as multiple constructor declarations. */
   def constructors(): Seq[ConstructorDeclaration] =
     classBodyDeclarations().map(_.asInstanceOf[ConstructorDeclaration])
 
@@ -101,9 +93,7 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
 /** Helper for Java utility methods. */
 object Java {
   /** Creates a Java fragment with initial content specified. */
-  def apply(text: String): Java = {
-    new Java(text)
-  }
+  def apply(text: String): Java = new Java(text)
 
   /** Creates a Java fragment with initial content from the given `text` separated by `separator`. */
   def apply(text: Seq[String], separator: String = ";"): Java = {
