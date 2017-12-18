@@ -1,4 +1,4 @@
-# org.combinators.templating
+# org.combinators.templating ![build status](https://travis-ci.org/combinators/templating.svg?branch=master)
 ## Templating support for multiple languages
 
 This project adds templating support for multiple languages.
