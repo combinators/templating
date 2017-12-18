@@ -24,30 +24,26 @@ import com.github.javaparser.ast.visitor.GenericVisitorAdapter
 
 import scala.collection.JavaConverters._
 
-trait JavaPersistable extends Persistable
-
-object JavaPersistable {
-  type Aux[TT] = Persistable { type T = TT }
-
+trait JavaPersistableInstances {
   /** Persistable instance for a compilation unit.
     * Derives path and file names from the package and the name of the first declared type.
     */
-  implicit def compilationUnitInstance: Aux[CompilationUnit] =
+  implicit def compilationUnitInstance: JavaPersistable.Aux[CompilationUnit] =
     new Persistable {
       type T = CompilationUnit
-      override def rawText(compilationUnit: CompilationUnit) = compilationUnit.toString
+      override def rawText(compilationUnit: CompilationUnit) = compilationUnit.toString.getBytes
       override def path(compilationUnit: CompilationUnit) = {
         val pkg: Seq[String] =
           compilationUnit.getPackageDeclaration.orElse(null) match {
             case null => Seq.empty
             case somePkg =>
               somePkg.accept(new GenericVisitorAdapter[Seq[String], Unit] {
-                  override def visit(name: NameExpr, arg: Unit): Seq[String] = Seq(name.getNameAsString)
-                  override def visit(name: Name, arg: Unit): Seq[String] =
-                    Option(name.getQualifier.orElse(null))
-                      .map((q: Name) => q.accept(this, arg))
-                      .getOrElse(Seq.empty[String]) :+ name.getIdentifier
-                },
+                override def visit(name: NameExpr, arg: Unit): Seq[String] = Seq(name.getNameAsString)
+                override def visit(name: Name, arg: Unit): Seq[String] =
+                  Option(name.getQualifier.orElse(null))
+                    .map((q: Name) => q.accept(this, arg))
+                    .getOrElse(Seq.empty[String]) :+ name.getIdentifier
+              },
                 ()
               )
           }
@@ -56,6 +52,9 @@ object JavaPersistable {
         Paths.get(fullPath.head, fullPath.tail : _*)
       }
     }
+}
 
+object JavaPersistable extends JavaPersistableInstances {
+  type Aux[TT] = Persistable { type T = TT }
   def apply[T](implicit persistable: Aux[T]): Aux[T] = persistable
 }

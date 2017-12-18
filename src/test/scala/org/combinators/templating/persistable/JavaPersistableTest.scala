@@ -11,7 +11,7 @@ import org.scalatest._
 class JavaPersistableTest extends FunSpec {
   val className = "Foo"
   val classText = s"import whatever; class $className {}"
-  val persistableInstance: Persistable.Aux[CompilationUnit] = implicitly[Persistable.Aux[CompilationUnit]]
+  val persistableInstance: Persistable.Aux[CompilationUnit] = JavaPersistable.apply
   val pathPrefix = Seq("src", "main", "java")
 
   describe("Persisting a Java compilation unit") {
@@ -41,7 +41,7 @@ class JavaPersistableTest extends FunSpec {
     }
     it("should store text that parses back to an equal CompilationUnit") {
       val originalUnit = Java(classText).compilationUnit()
-      assert(Java(persistableInstance.rawText(originalUnit)).compilationUnit() == originalUnit)
+      assert(Java(new String(persistableInstance.rawText(originalUnit))).compilationUnit() == originalUnit)
     }
   }
 }

@@ -42,6 +42,7 @@ lazy val root = (Project(id = "templating", base = file(".")))
       ),
 
       sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "java-templates",
+      resourceDirectories in Test += sourceDirectory.value / "resources",
       TwirlKeys.templateImports := Seq(),
       TwirlKeys.templateFormats += ("java" -> "org.combinators.templating.twirl.JavaFormat"),
       TwirlKeys.templateImports += "org.combinators.templating.twirl.Java",
