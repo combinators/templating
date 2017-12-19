@@ -33,7 +33,6 @@ lazy val root = (Project(id = "templating", base = file(".")))
     .settings(
       moduleName := "templating",
 
-      crossScalaVersions := Seq("2.11.11", scalaVersion.value),
       libraryDependencies ++= Seq(
         "org.scalactic" %% "scalactic" % "3.0.4" % "test",
         "org.scalatest" %% "scalatest" % "3.0.4" % "test",
