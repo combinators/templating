@@ -7,9 +7,9 @@ import org.scalatest.FunSpec
 import scala.io.Source
 
 class ResourcePersistableTest extends FunSpec {
-  val elementToPersist: BundledRessource =
-    BundledRessource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
-  val persistableInstance: Persistable.Aux[BundledRessource] = ResourcePersistable.apply
+  val elementToPersist: BundledResource =
+    BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
+  val persistableInstance: Persistable.Aux[BundledResource] = ResourcePersistable.apply
 
   describe("Persisting a picture from the resources folder") {
     describe("in a temporary directory") {
