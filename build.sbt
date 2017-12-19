@@ -36,7 +36,7 @@ lazy val root = (Project(id = "templating", base = file(".")))
       libraryDependencies ++= Seq(
         "org.scalactic" %% "scalactic" % "3.0.4" % "test",
         "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-        "com.github.javaparser" % "javaparser-core" % "3.5.4",
+        "com.github.javaparser" % "javaparser-core" % "3.5.7",
         "org.apache.commons" % "commons-text" % "1.1"
       ),
 
