@@ -1,4 +1,8 @@
-# org.combinators.templating ![build status](https://travis-ci.org/combinators/templating.svg?branch=master)
+# org.combinators.templating 
+[![Maven Central](https://img.shields.io/maven-central/v/org.combinators/templating.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.combinators%22%20AND%20a%3A%22templating%22)
+[![build status](https://travis-ci.org/combinators/templating.svg?branch=master)](https://travis-ci.org/combinators/templating)
+[![Coverage Status](https://coveralls.io/repos/github/combinators/templating/badge.svg?branch=master)](https://coveralls.io/github/combinators/templating?branch=master)
+[![Join the chat at https://gitter.im/combinators/cls-scala](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/combinators/cls-scala)
 ## Templating support for multiple languages
 
 This project adds templating support for multiple languages.
