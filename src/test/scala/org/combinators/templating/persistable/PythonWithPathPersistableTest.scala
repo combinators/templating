@@ -2,13 +2,19 @@ package org.combinators.templating.persistable
 
 import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 
+import PythonWithPathPersistable._
 import org.apache.commons.io.FileUtils
+import org.combinators.templating.twirl.Python
 import org.scalatest._
 
-class ResourcePersistableTest extends fixture.FunSpec {
-  val elementToPersist: BundledResource =
-    BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
-  val persistableInstance: Persistable.Aux[BundledResource] = ResourcePersistable.apply
+class PythonWithPathPersistableTest extends fixture.FunSpec {
+  val persistable: PythonWithPathPersistable.Aux[PythonWithPath] = PythonWithPathPersistable.apply
+  val elementToPersist: PythonWithPath =
+    PythonWithPath(
+      Python(s"""class Foo:
+                |    pass
+                """.stripMargin),
+      Paths.get("bar/test.py"))
 
   type FixtureParam = Path
   def withFixture(test: OneArgTest) = {
@@ -17,22 +23,21 @@ class ResourcePersistableTest extends fixture.FunSpec {
     finally FileUtils.deleteDirectory(tmpDir.toFile)
   }
 
-  describe("Persisting a picture from the resources folder") { tmpDir: Path =>
+  describe("Persisting a piece of Python code to a file") {
     describe("in a temporary directory") { tmpDir: Path =>
-      persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist)
+      persistable.persist(tmpDir.toAbsolutePath, elementToPersist)
       val expectedPath = tmpDir.toAbsolutePath.resolve(elementToPersist.persistTo)
       it("should create a file named by its content") { tmpDir: Path =>
         assert(Files.exists(expectedPath))
       }
       it("should write exactly the specified contents") { tmpDir: Path =>
-        val resourceBytes = Files.readAllBytes(Paths.get(getClass.getResource("res/GammaMtau.png").toURI))
-        assert(Files.readAllBytes(expectedPath).sameElements(resourceBytes))
+        assert(Files.readAllBytes(expectedPath).sameElements(elementToPersist.code.getCode.getBytes))
       }
       it("should fail to persist the same thing twice") { tmpDir: Path =>
-        assertThrows[FileAlreadyExistsException](persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist))
+        assertThrows[FileAlreadyExistsException](persistable.persist(tmpDir.toAbsolutePath, elementToPersist))
       }
       it("should not fail to persist the same thing twice when overwriting semantics is expected") { tmpDir: Path =>
-        persistableInstance.persistOverwriting(tmpDir.toAbsolutePath, elementToPersist)
+        persistable.persistOverwriting(tmpDir.toAbsolutePath, elementToPersist)
       }
     }
   }

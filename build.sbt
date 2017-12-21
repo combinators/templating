@@ -33,7 +33,8 @@ lazy val root = (Project(id = "templating", base = file(".")))
         "org.scalactic" %% "scalactic" % "3.0.4" % "test",
         "org.scalatest" %% "scalatest" % "3.0.4" % "test",
         "com.github.javaparser" % "javaparser-core" % "3.5.7",
-        "org.apache.commons" % "commons-text" % "1.1"
+        "org.apache.commons" % "commons-text" % "1.1",
+        "commons-io" % "commons-io" % "2.6" % "test"
       ),
 
       sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "java-templates",
