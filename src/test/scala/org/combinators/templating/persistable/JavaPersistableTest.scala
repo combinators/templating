@@ -23,17 +23,17 @@ class JavaPersistableTest extends FunSpec {
       }
     }
     describe("when it contains multiple classes and interfaces") {
-      val otherClassText = "interface FooI {}\n class Bar {}"
       it("should use the name of the first class to determine the path") {
+        val otherClassText = "interface FooI {}\n class Bar {}"
         val expectedPathComponents = pathPrefix :+ s"$className.java"
         assert(persistableInstance.path(Java(Seq(classText, otherClassText).mkString("\n")).compilationUnit())
           == Paths.get(expectedPathComponents.head, expectedPathComponents.tail:_*))
       }
     }
     describe("when it contains a package declaration") {
-      val packages = Seq("foo", "bar")
-      val packagesText = s"package ${packages.mkString(".")};"
       it("should prefix the path with a directory structure for the package") {
+        val packages = Seq("foo", "bar")
+        val packagesText = s"package ${packages.mkString(".")};"
         val expectedPathComponents = pathPrefix ++ packages :+ s"$className.java"
         assert(persistableInstance.path(Java(Seq(packagesText, classText).mkString("\n")).compilationUnit())
           == Paths.get(expectedPathComponents.head, expectedPathComponents.tail:_*))

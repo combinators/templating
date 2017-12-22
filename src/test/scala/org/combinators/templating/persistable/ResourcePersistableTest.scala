@@ -2,38 +2,34 @@ package org.combinators.templating.persistable
 
 import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 
-import org.apache.commons.io.FileUtils
 import org.scalatest._
 
-class ResourcePersistableTest extends fixture.FunSpec {
-  val elementToPersist: BundledResource =
-    BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
+class ResourcePersistableTest extends fixture.FunSpec with TempDirectoryFixture with GivenWhenThen {
+
   val persistableInstance: Persistable.Aux[BundledResource] = ResourcePersistable.apply
 
-  type FixtureParam = Path
-  def withFixture(test: OneArgTest) = {
-    val tmpDir = Files.createTempDirectory("inhabitants")
-    try withFixture(test.toNoArgTest(tmpDir))
-    finally FileUtils.deleteDirectory(tmpDir.toFile)
-  }
+  describe("Persisting a picture from the resources folder") {
+    it("should create a file named by its content") { tmpDir: Path =>
+      Given("a resource to persist")
+      val elementToPersist: BundledResource =
+        BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
 
-  describe("Persisting a picture from the resources folder") { tmpDir: Path =>
-    describe("in a temporary directory") { tmpDir: Path =>
+      When("persisting it")
       persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist)
-      val expectedPath = tmpDir.toAbsolutePath.resolve(elementToPersist.persistTo)
-      it("should create a file named by its content") { tmpDir: Path =>
-        assert(Files.exists(expectedPath))
-      }
-      it("should write exactly the specified contents") { tmpDir: Path =>
-        val resourceBytes = Files.readAllBytes(Paths.get(getClass.getResource("res/GammaMtau.png").toURI))
-        assert(Files.readAllBytes(expectedPath).sameElements(resourceBytes))
-      }
-      it("should fail to persist the same thing twice") { tmpDir: Path =>
-        assertThrows[FileAlreadyExistsException](persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist))
-      }
-      it("should not fail to persist the same thing twice when overwriting semantics is expected") { tmpDir: Path =>
-        persistableInstance.persistOverwriting(tmpDir.toAbsolutePath, elementToPersist)
-      }
+
+      Then("its corresponding file should exist")
+      val expectedPath: Path = tmpDir.toAbsolutePath.resolve(elementToPersist.persistTo)
+      assert(Files.exists(expectedPath))
+
+      And("the file should have exactly the specified contents")
+      val resourceBytes = Files.readAllBytes(Paths.get(getClass.getResource("res/GammaMtau.png").toURI))
+      assert(Files.readAllBytes(expectedPath).sameElements(resourceBytes))
+
+      And("trying to persist the same element again should raise an exception")
+      assertThrows[FileAlreadyExistsException](persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist))
+
+      Then("it should not produce the exception when overwrite semantics is specified")
+      persistableInstance.persistOverwriting(tmpDir.toAbsolutePath, elementToPersist)
     }
   }
 }
