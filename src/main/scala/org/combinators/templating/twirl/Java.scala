@@ -35,13 +35,13 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
   def this(text: String) = this(Nil, Formats.safe(text))
   def this(elements: immutable.Seq[Java]) = this(elements, "")
 
-  private lazy val fullText: String = (text +: elements).mkString("\n")
+  private lazy val fullText: String = (text +: elements).mkString
 
   /** Content type of Java */
   val contentType = "text/x-java"
 
   /** Parses this element as a java compilation unit. */
-  def compilationUnit(): CompilationUnit = JavaParser.parse(new StringReader(fullText))
+  def compilationUnit(): CompilationUnit = JavaParser.parse(fullText)
 
   /** Parses an import declaration. */
   def importDeclaration(): ImportDeclaration = JavaParser.parseImport(fullText)
