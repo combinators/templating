@@ -32,8 +32,8 @@ lazy val root = (Project(id = "templating", base = file(".")))
       libraryDependencies ++= Seq(
         "org.scalactic" %% "scalactic" % "3.0.4" % "test",
         "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-        "com.github.javaparser" % "javaparser-core" % "3.5.7",
-        "org.apache.commons" % "commons-text" % "1.1",
+        "com.github.javaparser" % "javaparser-core" % "3.5.14",
+        "org.apache.commons" % "commons-text" % "1.2",
         "commons-io" % "commons-io" % "2.6" % "test"
       ),
 
@@ -75,8 +75,3 @@ lazy val noPublishSettings = Seq(
   publishLocal := Seq.empty,
   publishArtifact := false
 )
-
-credentials in ThisBuild ++= (for {
-  username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-  password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-} yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
