@@ -1,3 +1,6 @@
+### Version 1.0.1
+- Infrastructure and dependency updates.
+
 ### Version 1.0.0
 This is the first public release of templating.
 The most notable changes to prior (internal development) versions are:
