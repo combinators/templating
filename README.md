@@ -1,5 +1,5 @@
 # org.combinators.templating 
-[![Maven Central](https://img.shields.io/maven-central/v/org.combinators/templating_2.13.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.combinators%22%20AND%20%22templating%22)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.combinators/templating_2.13/badge.png?style=flat)](https://search.maven.org/search?q=g:org.combinators%20AND%20a:templating%2A)
 [![build status](https://travis-ci.org/combinators/templating.svg?branch=master)](https://travis-ci.org/combinators/templating)
 [![Coverage Status](https://coveralls.io/repos/github/combinators/templating/badge.svg?branch=master)](https://coveralls.io/github/combinators/templating?branch=master)
 [![Join the chat at https://gitter.im/combinators/cls-scala](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/combinators/cls-scala)
