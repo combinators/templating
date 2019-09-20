@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Jan Bessai
+ * Copyright 2017-2019 Jan Bessai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.expr.{Name, NameExpr}
 import com.github.javaparser.ast.visitor.GenericVisitorAdapter
 
-import scala.collection.JavaConverters._
+import scala.collection.immutable._
+import scala.collection.compat._
+import scala.jdk.CollectionConverters._
 
 trait JavaPersistableInstances {
   /** Persistable instance for a compilation unit.

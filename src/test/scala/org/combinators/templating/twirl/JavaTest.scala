@@ -6,6 +6,8 @@ import com.github.javaparser.ast.body.{BodyDeclaration, ConstructorDeclaration, 
 import com.github.javaparser.ast.expr._
 import com.github.javaparser.ast.stmt.Statement
 import org.scalatest._
+import scala.collection.immutable._
+import scala.collection.compat._
 
 class JavaTest extends FunSpec {
   val expected: String =

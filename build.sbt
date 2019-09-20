@@ -4,8 +4,8 @@ import sbt.Resolver
 lazy val commonSettings = Seq(
   organization := "org.combinators",
 
-  scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.12", scalaVersion.value),
+  scalaVersion := "2.13.1",
+  crossScalaVersions := Seq("2.11.12", "2.12.10", scalaVersion.value),
 
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
     Resolver.typesafeRepo("snapshots")
   ),
 
-  headerLicense := Some(HeaderLicense.ALv2("2017", "Jan Bessai")),
+  headerLicense := Some(HeaderLicense.ALv2("2017-2019", "Jan Bessai")),
 
   scalacOptions ++= Seq(
     "-unchecked",
@@ -27,20 +27,23 @@ lazy val commonSettings = Seq(
 lazy val root = (Project(id = "templating", base = file(".")))
     .settings(commonSettings: _*)
     .enablePlugins(SbtTwirl)
+
     .settings(
       moduleName := "templating",
       libraryDependencies ++= Seq(
-        "org.scalactic" %% "scalactic" % "3.0.4" % "test",
-        "org.scalatest" %% "scalatest" % "3.0.4" % "test",
-        "com.github.javaparser" % "javaparser-core" % "3.5.14",
-        "org.apache.commons" % "commons-text" % "1.2",
-        "commons-io" % "commons-io" % "2.6" % "test"
+        "org.scalactic" %% "scalactic" % "3.0.8" % "test",
+        "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+        "com.github.javaparser" % "javaparser-core" % "3.14.14",
+        "org.apache.commons" % "commons-text" % "1.8",
+        "commons-io" % "commons-io" % "2.6" % "test",
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2"
       ),
 
       sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "java-templates",
       resourceDirectories in Test += sourceDirectory.value / "resources",
       TwirlKeys.templateImports := Seq(),
       TwirlKeys.templateFormats += ("java" -> "org.combinators.templating.twirl.JavaFormat"),
+      TwirlKeys.templateImports += "scala.collection.immutable._",
       TwirlKeys.templateImports += "org.combinators.templating.twirl.Java",
 
       TwirlKeys.templateImports += "com.github.javaparser.ast._",

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Jan Bessai
+ * Copyright 2017-2019 Jan Bessai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,14 @@ import com.github.javaparser.ast.{CompilationUnit, ImportDeclaration, Node}
 import org.apache.commons.text.StringEscapeUtils
 import play.twirl.api.{BufferedContent, Format, Formats}
 
-import scala.collection.JavaConverters._
-import scala.collection.immutable
+import scala.collection.compat._
+import scala.collection.immutable._
+import scala.jdk.CollectionConverters._
 
 /** A Java fragment. */
-class Java private(elements: immutable.Seq[Java], text: String) extends BufferedContent[Java](elements, text) {
+class Java private(elements: Seq[Java], text: String) extends BufferedContent[Java](elements, text) {
   def this(text: String) = this(Nil, Formats.safe(text))
-  def this(elements: immutable.Seq[Java]) = this(elements, "")
+  def this(elements: Seq[Java]) = this(elements, "")
 
   private lazy val fullText: String = (text +: elements).mkString
 
@@ -41,35 +42,36 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
   val contentType = "text/x-java"
 
   /** Parses this element as a java compilation unit. */
-  def compilationUnit(): CompilationUnit = JavaParser.parse(fullText)
+  def compilationUnit(): CompilationUnit = StaticJavaParser.parse(fullText)
 
   /** Parses an import declaration. */
-  def importDeclaration(): ImportDeclaration = JavaParser.parseImport(fullText)
+  def importDeclaration(): ImportDeclaration = StaticJavaParser.parseImport(fullText)
 
   /** Parses this element as a single statement. */
-  def statement(): Statement = JavaParser.parseStatement(fullText)
+  def statement(): Statement = StaticJavaParser.parseStatement(fullText)
 
   /** Parses this element as multiple statements. */
-  def statements(): Seq[Statement] = JavaParser.parseBlock(s"{ $fullText }").getStatements.asScala
+  def statements(): Seq[Statement] =
+    StaticJavaParser.parseBlock(s"{ $fullText }").getStatements.asScala.to(Seq)
 
   /** Parses this element as an expression. */
-  def expression[T <: Expression](): T = JavaParser.parseExpression[T](fullText)
+  def expression[T <: Expression](): T = StaticJavaParser.parseExpression[T](fullText)
 
   /** Parses this element as a (potentially qualified) name. */
-  def name(): Name = JavaParser.parseName(fullText)
+  def name(): Name = StaticJavaParser.parseName(fullText)
 
   /** Parses this element as an unqualified name. */
-  def simpleName(): SimpleName = JavaParser.parseSimpleName(fullText)
+  def simpleName(): SimpleName = StaticJavaParser.parseSimpleName(fullText)
 
   /** Parses this element as a (unqualified) name expression. */
   def nameExpression(): NameExpr = expression()
 
   /** Parses this element as a class body declaration (e.g. a method or a field). */
-  def classBodyDeclaration(): BodyDeclaration[_] = JavaParser.parseBodyDeclaration(fullText)
+  def classBodyDeclaration(): BodyDeclaration[_] = StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as multiple class body declarations. */
   def classBodyDeclarations(): Seq[BodyDeclaration[_]] =
-    JavaParser.parse(s"class C { $fullText }").getTypes.asScala.head.getMembers.asScala
+    StaticJavaParser.parse(s"class C { $fullText }").getTypes.asScala.head.getMembers.asScala.to(Seq)
 
   /** Parses this element as multiple field declarations. */
   def fieldDeclarations(): Seq[FieldDeclaration] =
@@ -84,10 +86,10 @@ class Java private(elements: immutable.Seq[Java], text: String) extends Buffered
     classBodyDeclarations().map(_.asInstanceOf[ConstructorDeclaration])
 
   /** Parses this element as an interface body declaration (e.g. a method signature). */
-  def interfaceBodyDeclaration(): BodyDeclaration[_] = JavaParser.parseBodyDeclaration(fullText)
+  def interfaceBodyDeclaration(): BodyDeclaration[_] = StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as a type (e.g. the in  X foo = (X)bar). */
-  def tpe(): Type = JavaParser.parseType(fullText)
+  def tpe(): Type = StaticJavaParser.parseType(fullText)
 }
 
 /** Helper for Java utility methods. */
@@ -104,7 +106,7 @@ object Java {
   def apply(node: Node): Java = Java(node.toString)
 
   /** Creates a Java fragment with initial content from the asts `nodes`. */
-  def apply(nodes: Seq[Node]): Java = new Java(immutable.Seq(nodes map apply : _*))
+  def apply(nodes: Seq[Node]): Java = new Java(Seq(nodes map apply : _*))
 }
 
 object JavaFormat extends Format[Java] {
@@ -124,6 +126,6 @@ object JavaFormat extends Format[Java] {
   val empty: Java = new Java("")
 
   /** Creates an Java Fragment that holds other fragments. */
-  def fill(elements: immutable.Seq[Java]): Java = new Java(elements)
+  def fill(elements: Seq[Java]): Java = new Java(elements)
 
 }
