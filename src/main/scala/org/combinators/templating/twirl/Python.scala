@@ -20,7 +20,7 @@ import org.apache.commons.text.StringEscapeUtils
 import play.twirl.api.{BufferedContent, Format, Formats}
 
 import scala.collection.immutable
-
+import scala.collection.compat._
 
 /**
   * A Python fragment.
@@ -36,12 +36,12 @@ class Python private(elements: immutable.Seq[Python], text: String) extends Buff
 
   /** Indents this fragment by 4 spaces. */
   def indent: Python = {
-    Python(fullText.lines.map(l => s"    $l").mkString("\n"))
+    Python(fullText.linesIterator.map(l => s"    $l").mkString("\n"))
   }
 
   /** Indents everything except the first line in this fragment by 4 spaces. */
   def indentExceptFirst: Python = {
-    val lines: Seq[String] = fullText.lines.toSeq
+    val lines: Seq[String] = fullText.linesIterator.to(Seq)
     Python((lines.head +: lines.tail.map(l => s"    $l")).mkString("\n"))
   }
 

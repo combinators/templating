@@ -1,5 +1,5 @@
 # org.combinators.templating 
-[![Maven Central](https://img.shields.io/maven-central/v/org.combinators/templating_2.12.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.combinators%22%20AND%20%22templating%22)
+[![Maven Central](https://img.shields.io/maven-central/v/org.combinators/templating_2.13.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.combinators%22%20AND%20%22templating%22)
 [![build status](https://travis-ci.org/combinators/templating.svg?branch=master)](https://travis-ci.org/combinators/templating)
 [![Coverage Status](https://coveralls.io/repos/github/combinators/templating/badge.svg?branch=master)](https://coveralls.io/github/combinators/templating?branch=master)
 [![Join the chat at https://gitter.im/combinators/cls-scala](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/combinators/cls-scala)
@@ -22,7 +22,7 @@ You can search for released versions [here](http://search.maven.org/#search%7Cga
 
 To obtain the latest unreleased development version, clone the repository and run `sbt publishLocal`.
 
-Currently, Scala 2.11 and 2.12 are supported.
+Currently, Scala 2.11, 2.12 and 2.13 are supported.
 
 ## Examples
 
