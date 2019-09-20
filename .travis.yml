@@ -14,7 +14,9 @@ jobs:
       jdk: oraclejdk8
     - stage: test
       jdk: openjdk11
-      script: sbt clean coverage +test && sbt coverageReport coveralls
+      script: sbt clean test &&
+                sbt coverage ++2.12.10 test &&
+                sbt ++2.12.10 coverageReport coveralls
     - stage: deploy
       jdk: openjdk11
       script: |
