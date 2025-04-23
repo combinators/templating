@@ -19,7 +19,7 @@ package org.combinators.templating.persistable
 import java.nio.file.{Files, Path}
 
 import org.apache.commons.io.FileUtils
-import org.scalatest.{Outcome, funspec}
+import org.scalatest.{funspec, Outcome}
 import funspec._
 
 trait TempDirectoryFixture { self: FixtureAnyFunSpec =>

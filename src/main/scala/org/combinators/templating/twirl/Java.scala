@@ -20,7 +20,12 @@ import java.io.StringReader
 
 import com.github.javaparser._
 import com.github.javaparser.ast.`type`.Type
-import com.github.javaparser.ast.body.{BodyDeclaration, ConstructorDeclaration, FieldDeclaration, MethodDeclaration}
+import com.github.javaparser.ast.body.{
+  BodyDeclaration,
+  ConstructorDeclaration,
+  FieldDeclaration,
+  MethodDeclaration
+}
 import com.github.javaparser.ast.expr.{Expression, Name, NameExpr, SimpleName}
 import com.github.javaparser.ast.stmt.Statement
 import com.github.javaparser.ast.{CompilationUnit, ImportDeclaration, Node}
@@ -31,7 +36,8 @@ import scala.collection.immutable._
 import scala.jdk.CollectionConverters._
 
 /** A Java fragment. */
-class Java private(elements: Seq[Java], text: String) extends BufferedContent[Java](elements, text) {
+class Java private (elements: Seq[Java], text: String)
+    extends BufferedContent[Java](elements, text) {
   def this(text: String) = this(Nil, Formats.safe(text))
   def this(elements: Seq[Java]) = this(elements, "")
 
@@ -44,7 +50,8 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
   def compilationUnit(): CompilationUnit = StaticJavaParser.parse(fullText)
 
   /** Parses an import declaration. */
-  def importDeclaration(): ImportDeclaration = StaticJavaParser.parseImport(fullText)
+  def importDeclaration(): ImportDeclaration =
+    StaticJavaParser.parseImport(fullText)
 
   /** Parses this element as a single statement. */
   def statement(): Statement = StaticJavaParser.parseStatement(fullText)
@@ -54,7 +61,8 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
     StaticJavaParser.parseBlock(s"{ $fullText }").getStatements.asScala.to(Seq)
 
   /** Parses this element as an expression. */
-  def expression[T <: Expression](): T = StaticJavaParser.parseExpression[T](fullText)
+  def expression[T <: Expression](): T =
+    StaticJavaParser.parseExpression[T](fullText)
 
   /** Parses this element as a (potentially qualified) name. */
   def name(): Name = StaticJavaParser.parseName(fullText)
@@ -65,12 +73,22 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
   /** Parses this element as a (unqualified) name expression. */
   def nameExpression(): NameExpr = expression()
 
-  /** Parses this element as a class body declaration (e.g. a method or a field). */
-  def classBodyDeclaration(): BodyDeclaration[?] = StaticJavaParser.parseBodyDeclaration(fullText)
+  /** Parses this element as a class body declaration (e.g. a method or a
+    * field).
+    */
+  def classBodyDeclaration(): BodyDeclaration[?] =
+    StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as multiple class body declarations. */
   def classBodyDeclarations(): Seq[BodyDeclaration[?]] =
-    StaticJavaParser.parse(s"class C { $fullText }").getTypes.asScala.head.getMembers.asScala.to(Seq)
+    StaticJavaParser
+      .parse(s"class C { $fullText }")
+      .getTypes
+      .asScala
+      .head
+      .getMembers
+      .asScala
+      .to(Seq)
 
   /** Parses this element as multiple field declarations. */
   def fieldDeclarations(): Seq[FieldDeclaration] =
@@ -84,8 +102,11 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
   def constructors(): Seq[ConstructorDeclaration] =
     classBodyDeclarations().map(_.asInstanceOf[ConstructorDeclaration])
 
-  /** Parses this element as an interface body declaration (e.g. a method signature). */
-  def interfaceBodyDeclaration(): BodyDeclaration[?] = StaticJavaParser.parseBodyDeclaration(fullText)
+  /** Parses this element as an interface body declaration (e.g. a method
+    * signature).
+    */
+  def interfaceBodyDeclaration(): BodyDeclaration[?] =
+    StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as a type (e.g. the in  X foo = (X)bar). */
   def tpe(): Type = StaticJavaParser.parseType(fullText)
@@ -93,10 +114,13 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
 
 /** Helper for Java utility methods. */
 object Java {
+
   /** Creates a Java fragment with initial content specified. */
   def apply(text: String): Java = new Java(text)
 
-  /** Creates a Java fragment with initial content from the given `text` separated by `separator`. */
+  /** Creates a Java fragment with initial content from the given `text`
+    * separated by `separator`.
+    */
   def apply(text: Seq[String], separator: String = ";"): Java = {
     apply(text.mkString(separator))
   }
@@ -105,19 +129,22 @@ object Java {
   def apply(node: Node): Java = Java(node.toString)
 
   /** Creates a Java fragment with initial content from the asts `nodes`. */
-  def apply(nodes: Seq[Node]): Java = new Java(Seq((nodes map apply)*))
+  def apply(nodes: Seq[Node]): Java = new Java(Seq((nodes.map(apply))*))
 }
 
 object JavaFormat extends Format[Java] {
+
   /** Integrates `text` without performing any escaping process.
     *
-    * @param text Text to integrate
+    * @param text
+    *   Text to integrate
     */
   def raw(text: String): Java = Java(text)
 
   /** Escapes `text` using Java String rules.
     *
-    * @param text Text to integrate
+    * @param text
+    *   Text to integrate
     */
   def escape(text: String): Java = Java(StringEscapeUtils.escapeJava(text))
 

@@ -20,18 +20,27 @@ import java.nio.file.{Files, Path, Paths}
 
 /** A persistable resource on the classpath.
   *
-  * @param name the name by which to locate the resource within the classpath.
-  * @param persistTo the name of the file where to store the resource.
-  * @param classToLoadResource the class which will be used to load the resource (@see
+  * @param name
+  *   the name by which to locate the resource within the classpath.
+  * @param persistTo
+  *   the name of the file where to store the resource.
+  * @param classToLoadResource
+  *   the class which will be used to load the resource (@see
   */
-case class BundledResource(name: String, persistTo: Path, classToLoadResource: Class[?] = classOf[BundledResource])
+case class BundledResource(
+    name: String,
+    persistTo: Path,
+    classToLoadResource: Class[?] = classOf[BundledResource]
+)
 
 trait ResourcePersistableInstances {
   def bundledResourceInstance: ResourcePersistable.Aux = new Persistable {
     override type T = BundledResource
     override def path(elem: BundledResource): Path = elem.persistTo
     override def rawText(elem: BundledResource): Array[Byte] =
-      Files.readAllBytes(Paths.get(elem.classToLoadResource.getResource(elem.name).toURI))
+      Files.readAllBytes(
+        Paths.get(elem.classToLoadResource.getResource(elem.name).toURI)
+      )
   }
 }
 

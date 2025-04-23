@@ -21,10 +21,10 @@ import play.twirl.api.{BufferedContent, Format, Formats}
 
 import scala.collection.immutable
 
-/**
-  * A Python fragment.
+/** A Python fragment.
   */
-class Python private(elements: immutable.Seq[Python], text: String) extends BufferedContent[Python](elements, text) {
+class Python private (elements: immutable.Seq[Python], text: String)
+    extends BufferedContent[Python](elements, text) {
   def this(text: String) = this(Nil, Formats.safe(text))
   def this(elements: immutable.Seq[Python]) = this(elements, "")
 
@@ -48,33 +48,36 @@ class Python private(elements: immutable.Seq[Python], text: String) extends Buff
   def getCode: String = fullText
 }
 
-/**
-  * Helper for Python utility methods.
+/** Helper for Python utility methods.
   */
 object Python {
+
   /** Creates a Python fragment with initial content specified. */
   def apply(text: String): Python = {
     new Python(text)
   }
 
-  /** Creates a Python fragment with initial content from the given `text` separated by `separator`. */
+  /** Creates a Python fragment with initial content from the given `text`
+    * separated by `separator`.
+    */
   def apply(text: Seq[String], separator: String = ";"): Python = {
     apply(text.mkString(separator))
   }
 }
 
 object PythonFormat extends Format[Python] {
-  /**
-    * Integrates `text` without performing any escaping process.
+
+  /** Integrates `text` without performing any escaping process.
     *
-    * @param text Text to integrate
+    * @param text
+    *   Text to integrate
     */
   def raw(text: String): Python = Python(text)
 
-  /**
-    * Escapes `text` using Python String rules.
+  /** Escapes `text` using Python String rules.
     *
-    * @param text Text to integrate
+    * @param text
+    *   Text to integrate
     */
   def escape(text: String): Python = Python(StringEscapeUtils.escapeJava(text))
 
@@ -85,4 +88,3 @@ object PythonFormat extends Format[Python] {
   def fill(elements: immutable.Seq[Python]): Python = new Python(elements)
 
 }
-

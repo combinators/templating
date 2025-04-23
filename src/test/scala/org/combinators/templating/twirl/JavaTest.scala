@@ -18,7 +18,12 @@ package org.combinators.templating.twirl
 
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.`type`.Type
-import com.github.javaparser.ast.body.{BodyDeclaration, ConstructorDeclaration, FieldDeclaration, MethodDeclaration}
+import com.github.javaparser.ast.body.{
+  BodyDeclaration,
+  ConstructorDeclaration,
+  FieldDeclaration,
+  MethodDeclaration
+}
 import com.github.javaparser.ast.expr._
 import com.github.javaparser.ast.stmt.Statement
 import org.scalatest._
@@ -94,28 +99,28 @@ class JavaTest extends AnyFunSpec {
        |}
     """.stripMargin
 
-  val importDecl: ImportDeclaration = Java("import bar.Bar;").importDeclaration()
+  val importDecl: ImportDeclaration =
+    Java("import bar.Bar;").importDeclaration()
   val className: SimpleName = Java("YYY$_ZZZ").simpleName()
-  val singleStatement: Statement = Java(s"""System.out.println("never do this in practice!");""").statement()
-  val multiStatements: Seq[Statement] = Java(
-    s"""
+  val singleStatement: Statement =
+    Java(s"""System.out.println("never do this in practice!");""").statement()
+  val multiStatements: Seq[Statement] = Java(s"""
        |int x = 1; // I don't know
        |for (int y = 10; y > x; y--) {
        |  System.out.println("why I do this");
        |}""".stripMargin).statements()
-  val someString: StringLiteralExpr = Java(""""Ei cän \" dö Ünicöð€"""").expression()
+  val someString: StringLiteralExpr =
+    Java(""""Ei cän \" dö Ünicöð€"""").expression()
   val tpe: Type = Java("Hululu.Lalala[][]").tpe()
   val fieldDeclarations: Seq[FieldDeclaration] =
-    Java(
-      s"""
+    Java(s"""
          |static X xoo = null;
          |Y yoo = new Yoo();
          |Z[] zoos;""".stripMargin).fieldDeclarations()
   val name: Name = Java("some.EnvironmentClass.xoo").name()
   val nameExpr: NameExpr = Java("xoo").nameExpression()
   val constructors: Seq[ConstructorDeclaration] =
-    Java(
-      s"""
+    Java(s"""
          |/** By default do crazyness. */
          |public YYY$$_ZZZ() {
          |  System.disco();
@@ -128,22 +133,19 @@ class JavaTest extends AnyFunSpec {
          |  System.disco();
          |}""".stripMargin).constructors()
   val singleDecl: BodyDeclaration[?] =
-    Java(
-      s"""
+    Java(s"""
          |public static void main(String[] args) {
          |  System.out.println("The application has crashed");
          |  System.out.println("Never run this application again");
          |}""".stripMargin).classBodyDeclaration()
   val multiDecls: Seq[BodyDeclaration[?]] =
-    Java(
-      s"""
+    Java(s"""
          |public static volatile String gargh = "GAAAAAAARRRG!!";
          |@nobodyunderstands public int getReason() { return reason; }
          |public int reason = 42;""".stripMargin).classBodyDeclarations()
 
   val methodDecls: Seq[MethodDeclaration] =
-    Java(
-      s"""
+    Java(s"""
          |private void hiddenEffect() {
          |      System.evil();
          |    }
@@ -152,28 +154,34 @@ class JavaTest extends AnyFunSpec {
          |      hiddenEffect(); // I break my contract }:->
          |    }""".stripMargin).methodDeclarations()
   val interfaceMethod: BodyDeclaration[?] =
-    Java("public default void doFoos(YYY$_ZZZ x) { System.out.println(x.toString()); }").interfaceBodyDeclaration()
+    Java(
+      "public default void doFoos(YYY$_ZZZ x) { System.out.println(x.toString()); }"
+    ).interfaceBodyDeclaration()
 
   describe("Rendering a Java template with lots of stuff and strings in it") {
-    val rendered: JavaFormat.Appendable = org.combinators.templating.java.JavaTemplateTest.render(
-      imp = importDecl,
-      className = className,
-      singleStatement = singleStatement,
-      multiStatements = multiStatements,
-      someString = someString,
-      qualifiedName = name,
-      nameExpression = nameExpr,
-      singleDecl = singleDecl,
-      multiDecls = multiDecls,
-      fieldDeclarations = fieldDeclarations,
-      methodDeclarations = methodDecls,
-      constructors = constructors,
-      interfaceMethod = interfaceMethod,
-      tpe = tpe)
+    val rendered: JavaFormat.Appendable =
+      org.combinators.templating.java.JavaTemplateTest.render(
+        imp = importDecl,
+        className = className,
+        singleStatement = singleStatement,
+        multiStatements = multiStatements,
+        someString = someString,
+        qualifiedName = name,
+        nameExpression = nameExpr,
+        singleDecl = singleDecl,
+        multiDecls = multiDecls,
+        fieldDeclarations = fieldDeclarations,
+        methodDeclarations = methodDecls,
+        constructors = constructors,
+        interfaceMethod = interfaceMethod,
+        tpe = tpe
+      )
     describe("when parsing it") {
       val parsedResult = rendered.compilationUnit()
       it("should be equal to the expected result") {
-        assert(Java(expected).compilationUnit().toString == parsedResult.toString)
+        assert(
+          Java(expected).compilationUnit().toString == parsedResult.toString
+        )
       }
     }
   }

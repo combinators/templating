@@ -43,14 +43,12 @@ class PythonTest extends AnyFunSpec {
 
   val clsName: Python = Python("Foo")
   val body: Python =
-    Python(
-      """self.blah = "eggs!"
+    Python("""self.blah = "eggs!"
         |if true:
         |    pass
         |else:
         |    pass""".stripMargin)
-  val bodyTight: Python = Python(
-    """if false:
+  val bodyTight: Python = Python("""if false:
       |    pass
       |else:
       |    pass""".stripMargin)
@@ -61,7 +59,8 @@ class PythonTest extends AnyFunSpec {
       clsName = clsName,
       text = text,
       body = body,
-      bodyTight = bodyTight)
+      bodyTight = bodyTight
+    )
     it("should produce exactly the expected substitution") {
       assert(expected.trim == rendered.getCode.trim)
     }
