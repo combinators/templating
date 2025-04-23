@@ -5,12 +5,12 @@
     someString: Expression,
     qualifiedName: Name,
     nameExpression: NameExpr,
-    singleDecl: BodyDeclaration[_],
-    multiDecls: Seq[BodyDeclaration[_]],
+    singleDecl: BodyDeclaration[?],
+    multiDecls: Seq[BodyDeclaration[?]],
     fieldDeclarations: Seq[FieldDeclaration],
     methodDeclarations: Seq[MethodDeclaration],
     constructors: Seq[ConstructorDeclaration],
-    interfaceMethod: BodyDeclaration[_],
+    interfaceMethod: BodyDeclaration[?],
     tpe: Type)
 
 @Java(imp)

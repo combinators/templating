@@ -3,16 +3,17 @@ package org.combinators.templating.persistable
 import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 
 import org.scalatest._
+import funspec._
 
-class ResourcePersistableTest extends fixture.FunSpec with TempDirectoryFixture with GivenWhenThen {
+class ResourcePersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with GivenWhenThen {
 
   val persistableInstance: Persistable.Aux[BundledResource] = ResourcePersistable.apply
 
   describe("Persisting a picture from the resources folder") {
-    it("should create a file named by its content") { tmpDir: Path =>
+    it("should create a file named by its content") { (tmpDir: Path) =>
       Given("a resource to persist")
       val elementToPersist: BundledResource =
-        BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass)
+        BundledResource("res/GammaMtau.png", Paths.get("test", "path", "picture.png"), getClass())
 
       When("persisting it")
       persistableInstance.persist(tmpDir.toAbsolutePath, elementToPersist)

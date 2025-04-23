@@ -3,15 +3,16 @@ package org.combinators.templating.persistable
 import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 
 import org.scalatest._
+import funspec._
 
-class PersistableTest extends fixture.FunSpec with TempDirectoryFixture with GivenWhenThen {
+class PersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with GivenWhenThen {
   val persistable: Persistable.Aux[String] = new Persistable {
     override type T = String
     override def rawText(elem: T): Array[Byte] = elem.getBytes
     override def path(elem: T): Path = Paths.get(elem)
   }
   describe("Persisting a String to a file named by its content") {
-    it("should create a file named by its content") { tmpDir: Path =>
+    it("should create a file named by its content") { (tmpDir: Path) =>
       Given("an element to persist")
       val elementToPersist = "test"
 
@@ -34,7 +35,7 @@ class PersistableTest extends fixture.FunSpec with TempDirectoryFixture with Giv
   }
 
   describe("Persisting an element that specifies a subdirectory") {
-    it("should create a subdirectory") { tmpDir: Path =>
+    it("should create a subdirectory") { (tmpDir: Path) =>
       Given("an element to persist")
       val elementToPersistInSubdir = Paths.get("foo", "test").toString
 

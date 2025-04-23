@@ -23,7 +23,6 @@ import com.github.javaparser.ast.expr.{Name, NameExpr}
 import com.github.javaparser.ast.visitor.GenericVisitorAdapter
 
 import scala.collection.immutable._
-import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 trait JavaPersistableInstances {
@@ -51,7 +50,7 @@ trait JavaPersistableInstances {
           }
         val clsName = s"${compilationUnit.getTypes.asScala.head.getName}.java"
         val fullPath = "src" +: "main" +: "java" +: pkg :+ clsName
-        Paths.get(fullPath.head, fullPath.tail : _*)
+        Paths.get(fullPath.head, fullPath.tail*)
       }
     }
 }

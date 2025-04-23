@@ -27,7 +27,6 @@ import com.github.javaparser.ast.{CompilationUnit, ImportDeclaration, Node}
 import org.apache.commons.text.StringEscapeUtils
 import play.twirl.api.{BufferedContent, Format, Formats}
 
-import scala.collection.compat._
 import scala.collection.immutable._
 import scala.jdk.CollectionConverters._
 
@@ -67,10 +66,10 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
   def nameExpression(): NameExpr = expression()
 
   /** Parses this element as a class body declaration (e.g. a method or a field). */
-  def classBodyDeclaration(): BodyDeclaration[_] = StaticJavaParser.parseBodyDeclaration(fullText)
+  def classBodyDeclaration(): BodyDeclaration[?] = StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as multiple class body declarations. */
-  def classBodyDeclarations(): Seq[BodyDeclaration[_]] =
+  def classBodyDeclarations(): Seq[BodyDeclaration[?]] =
     StaticJavaParser.parse(s"class C { $fullText }").getTypes.asScala.head.getMembers.asScala.to(Seq)
 
   /** Parses this element as multiple field declarations. */
@@ -86,7 +85,7 @@ class Java private(elements: Seq[Java], text: String) extends BufferedContent[Ja
     classBodyDeclarations().map(_.asInstanceOf[ConstructorDeclaration])
 
   /** Parses this element as an interface body declaration (e.g. a method signature). */
-  def interfaceBodyDeclaration(): BodyDeclaration[_] = StaticJavaParser.parseBodyDeclaration(fullText)
+  def interfaceBodyDeclaration(): BodyDeclaration[?] = StaticJavaParser.parseBodyDeclaration(fullText)
 
   /** Parses this element as a type (e.g. the in  X foo = (X)bar). */
   def tpe(): Type = StaticJavaParser.parseType(fullText)
@@ -106,7 +105,7 @@ object Java {
   def apply(node: Node): Java = Java(node.toString)
 
   /** Creates a Java fragment with initial content from the asts `nodes`. */
-  def apply(nodes: Seq[Node]): Java = new Java(Seq(nodes map apply : _*))
+  def apply(nodes: Seq[Node]): Java = new Java(Seq((nodes map apply)*))
 }
 
 object JavaFormat extends Format[Java] {

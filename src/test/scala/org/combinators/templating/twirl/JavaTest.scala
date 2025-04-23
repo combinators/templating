@@ -6,10 +6,10 @@ import com.github.javaparser.ast.body.{BodyDeclaration, ConstructorDeclaration, 
 import com.github.javaparser.ast.expr._
 import com.github.javaparser.ast.stmt.Statement
 import org.scalatest._
+import funspec._
 import scala.collection.immutable._
-import scala.collection.compat._
 
-class JavaTest extends FunSpec {
+class JavaTest extends AnyFunSpec {
   val expected: String =
     """
        |import bar.Bar;
@@ -111,14 +111,14 @@ class JavaTest extends FunSpec {
          |  super(zs);
          |  System.disco();
          |}""".stripMargin).constructors()
-  val singleDecl: BodyDeclaration[_] =
+  val singleDecl: BodyDeclaration[?] =
     Java(
       s"""
          |public static void main(String[] args) {
          |  System.out.println("The application has crashed");
          |  System.out.println("Never run this application again");
          |}""".stripMargin).classBodyDeclaration()
-  val multiDecls: Seq[BodyDeclaration[_]] =
+  val multiDecls: Seq[BodyDeclaration[?]] =
     Java(
       s"""
          |public static volatile String gargh = "GAAAAAAARRRG!!";
@@ -135,7 +135,7 @@ class JavaTest extends FunSpec {
          |      System.out.println(withThisArg);
          |      hiddenEffect(); // I break my contract }:->
          |    }""".stripMargin).methodDeclarations()
-  val interfaceMethod: BodyDeclaration[_] =
+  val interfaceMethod: BodyDeclaration[?] =
     Java("public default void doFoos(YYY$_ZZZ x) { System.out.println(x.toString()); }").interfaceBodyDeclaration()
 
   describe("Rendering a Java template with lots of stuff and strings in it") {
