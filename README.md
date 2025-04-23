@@ -22,7 +22,7 @@ You can search for released versions [here](http://search.maven.org/#search%7Cga
 
 To obtain the latest unreleased development version, clone the repository and run `sbt publishLocal`.
 
-Currently, Scala 2.11, 2.12 and 2.13 are supported.
+Currently, Scala 2.13, 3.3 and 3.6 are supported.
 
 ## Examples
 

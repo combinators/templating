@@ -24,7 +24,7 @@ import java.nio.file.{Files, Path, Paths}
   * @param persistTo the name of the file where to store the resource.
   * @param classToLoadResource the class which will be used to load the resource (@see
   */
-case class BundledResource(name: String, persistTo: Path, classToLoadResource: Class[_] = getClass)
+case class BundledResource(name: String, persistTo: Path, classToLoadResource: Class[?] = classOf[BundledResource])
 
 trait ResourcePersistableInstances {
   def bundledResourceInstance: ResourcePersistable.Aux = new Persistable {

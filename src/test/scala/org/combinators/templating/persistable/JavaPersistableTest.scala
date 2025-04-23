@@ -7,8 +7,9 @@ import JavaPersistable._
 import org.combinators.templating.twirl.Java
 
 import org.scalatest._
+import funspec._
 
-class JavaPersistableTest extends FunSpec {
+class JavaPersistableTest extends AnyFunSpec {
   val className = "Foo"
   val classText = s"import whatever; class $className {}"
   val persistableInstance: Persistable.Aux[CompilationUnit] = JavaPersistable.apply
@@ -19,7 +20,7 @@ class JavaPersistableTest extends FunSpec {
       it(s"should use 'src/main/java/$className.java' as path") {
         val expectedPathComponents = pathPrefix :+ s"$className.java"
         assert(persistableInstance.path(Java(classText).compilationUnit())
-          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail:_*))
+          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail*))
       }
     }
     describe("when it contains multiple classes and interfaces") {
@@ -27,7 +28,7 @@ class JavaPersistableTest extends FunSpec {
         val otherClassText = "interface FooI {}\n class Bar {}"
         val expectedPathComponents = pathPrefix :+ s"$className.java"
         assert(persistableInstance.path(Java(Seq(classText, otherClassText).mkString("\n")).compilationUnit())
-          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail:_*))
+          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail*))
       }
     }
     describe("when it contains a package declaration") {
@@ -36,7 +37,7 @@ class JavaPersistableTest extends FunSpec {
         val packagesText = s"package ${packages.mkString(".")};"
         val expectedPathComponents = pathPrefix ++ packages :+ s"$className.java"
         assert(persistableInstance.path(Java(Seq(packagesText, classText).mkString("\n")).compilationUnit())
-          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail:_*))
+          == Paths.get(expectedPathComponents.head, expectedPathComponents.tail*))
       }
     }
     it("should store text that parses back to an equal CompilationUnit") {

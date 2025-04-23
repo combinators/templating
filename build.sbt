@@ -4,24 +4,28 @@ import sbt.Resolver
 lazy val commonSettings = Seq(
   organization := "org.combinators",
 
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.11.12", "2.12.10", scalaVersion.value),
+  scalaVersion := "3.6.4",
+  crossScalaVersions := Seq("2.13.16", "3.3.5", scalaVersion.value),
 
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
-    Resolver.typesafeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots"),
-    Resolver.typesafeRepo("snapshots")
-  ),
+  resolvers ++= Resolver.sonatypeOssRepos("releases"),
+  resolvers += Resolver.typesafeRepo("releases"),
 
-  headerLicense := Some(HeaderLicense.ALv2("2017-2019", "Jan Bessai")),
+  headerLicense := Some(HeaderLicense.ALv2("2017-2025", "Jan Bessai")),
 
   scalacOptions ++= Seq(
     "-unchecked",
     "-deprecation",
     "-feature",
     "-language:implicitConversions"
-  )
+  ),
+  scalacOptions ++= {
+    if (scalaVersion.value >= "2.13.14" && scalaVersion.value < "3.0") Seq(
+      // "-Xsource:3",
+      "-Xsource:3-cross"
+    )
+    else Nil
+  },
+  ThisBuild/scapegoatVersion := "3.1.8"
 ) ++ publishSettings
 
 lazy val root = (Project(id = "templating", base = file(".")))
@@ -31,16 +35,15 @@ lazy val root = (Project(id = "templating", base = file(".")))
     .settings(
       moduleName := "templating",
       libraryDependencies ++= Seq(
-        "org.scalactic" %% "scalactic" % "3.0.8" % "test",
-        "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-        "com.github.javaparser" % "javaparser-core" % "3.14.14",
-        "org.apache.commons" % "commons-text" % "1.8",
-        "commons-io" % "commons-io" % "2.6" % "test",
-        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2"
+        "org.scalactic" %% "scalactic" % "3.2.19" % "test",
+        "org.scalatest" %% "scalatest" % "3.2.19" % "test",
+        "com.github.javaparser" % "javaparser-core" % "3.26.4",
+        "org.apache.commons" % "commons-text" % "1.13.1",
+        "commons-io" % "commons-io" % "2.19.0" % "test"
       ),
 
-      sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "java-templates",
-      resourceDirectories in Test += sourceDirectory.value / "resources",
+      Test / TwirlKeys.compileTemplates / sourceDirectories += sourceDirectory.value / "test" / "java-templates",
+      Test / resourceDirectories += sourceDirectory.value / "resources",
       TwirlKeys.templateImports := Seq(),
       TwirlKeys.templateFormats += ("java" -> "org.combinators.templating.twirl.JavaFormat"),
       TwirlKeys.templateImports += "scala.collection.immutable._",
@@ -53,7 +56,7 @@ lazy val root = (Project(id = "templating", base = file(".")))
       TwirlKeys.templateImports += "com.github.javaparser.ast.stmt._",
       TwirlKeys.templateImports += "com.github.javaparser.ast.`type`._",
 
-      sourceDirectories in (Test, TwirlKeys.compileTemplates) += sourceDirectory.value / "test" / "python-templates",
+      Test / TwirlKeys.compileTemplates / sourceDirectories += sourceDirectory.value / "test" / "python-templates",
       TwirlKeys.templateFormats += ("py" -> "org.combinators.templating.twirl.PythonFormat"),
       TwirlKeys.templateImports += "org.combinators.templating.twirl.Python"
     )
@@ -64,13 +67,11 @@ lazy val publishSettings = Seq(
   licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
   scmInfo := Some(ScmInfo(url("https://www.github.com/combinators/templating"), "scm:git:git@github.com:combinators/templating.git")),
   developers := List(
-    Developer("JanBessai", "Jan Bessai", "jan.bessai@tu-dortmund.de", url("http://janbessai.github.io")),
+    Developer("JanBessai", "Jan Bessai", "jan.bessai@tu-dortmund.de", url("http://noprotocol.net")),
     Developer("heineman", "George T. Heineman", "heineman@wpi.edu", url("http://www.cs.wpi.edu/~heineman")),
     Developer("BorisDuedder", "Boris Düdder", "boris.d@di.ku.dk", url("http://duedder.net"))
   ),
-
-  pgpPublicRing := file("travis/local.pubring.asc"),
-  pgpSecretRing := file("travis/local.secring.asc"),
+  publishTo := sonatypePublishToBundle.value,
 )
 
 lazy val noPublishSettings = Seq(

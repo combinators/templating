@@ -1,8 +1,9 @@
 package org.combinators.templating.twirl
 
 import org.scalatest._
+import funspec._
 
-class PythonTest extends FunSpec {
+class PythonTest extends AnyFunSpec {
   val expected: String =
     """
       |class Foo(object):

@@ -5,12 +5,13 @@ import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 import PythonWithPathPersistable._
 import org.combinators.templating.twirl.Python
 import org.scalatest._
+import funspec._
 
-class PythonWithPathPersistableTest extends fixture.FunSpec with TempDirectoryFixture with GivenWhenThen {
+class PythonWithPathPersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with GivenWhenThen {
   val persistable: PythonWithPathPersistable.Aux[PythonWithPath] = PythonWithPathPersistable.apply
 
   describe("Persisting a piece of Python code to a file") {
-    it("should create a file named by its content") { tmpDir: Path =>
+    it("should create a file named by its content") { (tmpDir: Path) =>
       Given("an element to persist")
       val elementToPersist: PythonWithPath =
         PythonWithPath(

@@ -20,7 +20,6 @@ import org.apache.commons.text.StringEscapeUtils
 import play.twirl.api.{BufferedContent, Format, Formats}
 
 import scala.collection.immutable
-import scala.collection.compat._
 
 /**
   * A Python fragment.
