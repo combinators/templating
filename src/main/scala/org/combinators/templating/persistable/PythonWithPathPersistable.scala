@@ -24,8 +24,10 @@ import org.combinators.templating.twirl.Python
 case class PythonWithPath(code: Python, persistTo: Path)
 
 trait PythonWithPathPersistableInstances {
+
   /** Persistable instance for [PythonWithPath]. */
-  implicit def pythonWithPathPersistable: PythonWithPathPersistable.Aux[PythonWithPath] = new Persistable {
+  implicit def pythonWithPathPersistable
+      : PythonWithPathPersistable.Aux[PythonWithPath] = new Persistable {
     type T = PythonWithPath
     def rawText(elem: PythonWithPath): Array[Byte] = elem.code.getCode.getBytes
     def path(elem: PythonWithPath): Path = elem.persistTo

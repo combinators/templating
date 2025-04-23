@@ -26,25 +26,29 @@ import scala.collection.immutable._
 import scala.jdk.CollectionConverters._
 
 trait JavaPersistableInstances {
-  /** Persistable instance for a compilation unit.
-    * Derives path and file names from the package and the name of the first declared type.
+
+  /** Persistable instance for a compilation unit. Derives path and file names
+    * from the package and the name of the first declared type.
     */
   implicit def compilationUnitInstance: JavaPersistable.Aux[CompilationUnit] =
     new Persistable {
       type T = CompilationUnit
-      override def rawText(compilationUnit: CompilationUnit) = compilationUnit.toString.getBytes
+      override def rawText(compilationUnit: CompilationUnit) =
+        compilationUnit.toString.getBytes
       override def path(compilationUnit: CompilationUnit) = {
         val pkg: Seq[String] =
           compilationUnit.getPackageDeclaration.orElse(null) match {
             case null => Seq.empty
             case somePkg =>
-              somePkg.accept(new GenericVisitorAdapter[Seq[String], Unit] {
-                override def visit(name: NameExpr, arg: Unit): Seq[String] = Seq(name.getNameAsString)
-                override def visit(name: Name, arg: Unit): Seq[String] =
-                  Option(name.getQualifier.orElse(null))
-                    .map((q: Name) => q.accept(this, arg))
-                    .getOrElse(Seq.empty[String]) :+ name.getIdentifier
-              },
+              somePkg.accept(
+                new GenericVisitorAdapter[Seq[String], Unit] {
+                  override def visit(name: NameExpr, arg: Unit): Seq[String] =
+                    Seq(name.getNameAsString)
+                  override def visit(name: Name, arg: Unit): Seq[String] =
+                    Option(name.getQualifier.orElse(null))
+                      .map((q: Name) => q.accept(this, arg))
+                      .getOrElse(Seq.empty[String]) :+ name.getIdentifier
+                },
                 ()
               )
           }

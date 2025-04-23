@@ -21,24 +21,27 @@ import java.io.File
 
 /** Type class for persistable objects (inhabitants). */
 trait Persistable {
+
   /** The type of the object to persist */
   type T
+
   /** Serialized representation of the object */
   def rawText(elem: T): Array[Byte]
-  /** Path where to store the object `elem` (relative to some later specified root) */
+
+  /** Path where to store the object `elem` (relative to some later specified
+    * root)
+    */
   def path(elem: T): Path
 
-  /**
-    * Computes the full path where to place `elem` relative to `basePath`.
+  /** Computes the full path where to place `elem` relative to `basePath`.
     */
   def fullPath(basePath: Path, elem: T): Path = {
     basePath.resolve(path(elem))
   }
 
-
-  /**
-    * Persists this object to an object dependent path under `basePath` and returns the persisted file.
-    * Overwrites any pre-existing files under `basePath` / `path`.
+  /** Persists this object to an object dependent path under `basePath` and
+    * returns the persisted file. Overwrites any pre-existing files under
+    * `basePath` / `path`.
     */
   def persistOverwriting(basePath: Path, elem: T): File = {
     val fp = fullPath(basePath, elem)
@@ -48,9 +51,9 @@ trait Persistable {
     fp.toFile
   }
 
-  /**
-    * Persists this object to an object dependent path under `basePath` and returns the persisted file.
-    * Throws an `FileAlreadyExistsException` if the file already exists.
+  /** Persists this object to an object dependent path under `basePath` and
+    * returns the persisted file. Throws an `FileAlreadyExistsException` if the
+    * file already exists.
     */
   def persist(basePath: Path, elem: T): File = {
     val fp = fullPath(basePath, elem)

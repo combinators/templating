@@ -21,7 +21,10 @@ import java.nio.file.{FileAlreadyExistsException, Files, Path, Paths}
 import org.scalatest._
 import funspec._
 
-class PersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with GivenWhenThen {
+class PersistableTest
+    extends FixtureAnyFunSpec
+    with TempDirectoryFixture
+    with GivenWhenThen {
   val persistable: Persistable.Aux[String] = new Persistable {
     override type T = String
     override def rawText(elem: T): Array[Byte] = elem.getBytes
@@ -40,12 +43,18 @@ class PersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with G
       assert(Files.exists(expectedPath))
 
       And("the file should have exactly the specified contents")
-      assert(Files.readAllBytes(expectedPath).sameElements(elementToPersist.getBytes))
+      assert(
+        Files.readAllBytes(expectedPath).sameElements(elementToPersist.getBytes)
+      )
 
       And("trying to persist the same element again should raise an exception")
-      assertThrows[FileAlreadyExistsException](persistable.persist(tmpDir.toAbsolutePath, elementToPersist))
+      assertThrows[FileAlreadyExistsException](
+        persistable.persist(tmpDir.toAbsolutePath, elementToPersist)
+      )
 
-      Then("it should not produce the exception when overwrite semantics is specified")
+      Then(
+        "it should not produce the exception when overwrite semantics is specified"
+      )
       persistable.persistOverwriting(tmpDir.toAbsolutePath, elementToPersist)
     }
   }
@@ -68,13 +77,24 @@ class PersistableTest extends FixtureAnyFunSpec with TempDirectoryFixture with G
       assert(Files.exists(expectedFileInSubdir))
 
       And("the file should have exactly the specified contents")
-      assert(Files.readAllBytes(expectedFileInSubdir).sameElements(elementToPersistInSubdir.getBytes))
+      assert(
+        Files
+          .readAllBytes(expectedFileInSubdir)
+          .sameElements(elementToPersistInSubdir.getBytes)
+      )
 
       And("trying to persist the same element again should raise an exception")
-      assertThrows[FileAlreadyExistsException](persistable.persist(tmpDir.toAbsolutePath, elementToPersistInSubdir))
+      assertThrows[FileAlreadyExistsException](
+        persistable.persist(tmpDir.toAbsolutePath, elementToPersistInSubdir)
+      )
 
-      Then("it should not produce the exception when overwrite semantics is specified")
-      persistable.persistOverwriting(tmpDir.toAbsolutePath, elementToPersistInSubdir)
+      Then(
+        "it should not produce the exception when overwrite semantics is specified"
+      )
+      persistable.persistOverwriting(
+        tmpDir.toAbsolutePath,
+        elementToPersistInSubdir
+      )
     }
   }
 }
