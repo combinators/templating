@@ -72,7 +72,7 @@ lazy val publishSettings = Seq(
     Developer("BorisDuedder", "Boris Düdder", "boris.d@di.ku.dk", url("http://duedder.net"))
   ),
   publishTo := sonatypePublishToBundle.value,
-)
+) ++ sys.env.get("PGP_KEY_HEX").map(h => usePgpKeyHex(h)).seq
 
 lazy val noPublishSettings = Seq(
   publish := Seq.empty,

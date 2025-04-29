@@ -70,12 +70,13 @@ jobs:
         SONA_USER: ${{ secrets.SONATYPE_USERNAME }}
         SONA_PASS: ${{ secrets.SONATYPE_PASSWORD }}
         PGP_SECRET: ${{ secrets.PGP_SECRET }}
-        PGP_PASS: ${{ secrets.PGP_PASS }}
+        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+        PGP_KEY_HEX: ${{ secrets.PGP_KEY_HEX }}
         CI: github
       run: |
         git fetch --prune --unshallow --tags &&
         export GPG_TTY=$(tty) &&
-        echo $PGP_SECRET | base64 -d | gpg --passphrase=$PGP_PASS --yes --batch --pinentry-mode loopback --import &&
+        echo $PGP_SECRET | base64 -d | gpg --passphrase=$PGP_PASSPHRASE --yes --batch --pinentry-mode loopback --import &&
         export PATH=`pwd`/.github/bin:$PATH &&
         sbt + test ciReleaseTagNextVersion ciReleaseSonatype
 
