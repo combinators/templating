@@ -35,13 +35,13 @@ class Python private (elements: immutable.Seq[Python], text: String)
 
   /** Indents this fragment by 4 spaces. */
   def indent: Python = {
-    Python(fullText.linesIterator.map(l => s"    $l").mkString("\n"))
+    Python(fullText.linesIterator.map(l => s"    $l").mkString(System.lineSeparator()))
   }
 
   /** Indents everything except the first line in this fragment by 4 spaces. */
   def indentExceptFirst: Python = {
     val lines: Seq[String] = fullText.linesIterator.to(Seq)
-    Python((lines.head +: lines.tail.map(l => s"    $l")).mkString("\n"))
+    Python((lines.head +: lines.tail.map(l => s"    $l")).mkString(System.lineSeparator()))
   }
 
   /** Returns the code of this fragment as a String. */
