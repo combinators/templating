@@ -1,6 +1,6 @@
 # org.combinators.templating 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.combinators/templating_2.13/badge.png?style=flat)](https://search.maven.org/search?q=g:org.combinators%20AND%20a:templating%2A)
-[![build status](https://travis-ci.org/combinators/templating.svg?branch=master)](https://travis-ci.org/combinators/templating)
+[![Test code, update coverage, and release master branch](https://github.com/combinators/templating/actions/workflows/test_and_release.yml/badge.svg?branch=master)](https://github.com/combinators/templating/actions/workflows/test_and_release.yml)
 [![Coverage Status](https://coveralls.io/repos/github/combinators/templating/badge.svg?branch=master)](https://coveralls.io/github/combinators/templating?branch=master)
 [![Join the chat at https://gitter.im/combinators/cls-scala](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/combinators/cls-scala)
 ## Templating support for multiple languages
