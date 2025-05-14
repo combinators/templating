@@ -1,5 +1,6 @@
 import sbt.Keys._
 import sbt.Resolver
+import xerial.sbt.Sonatype.sonatypeCentralHost
 
 lazy val commonSettings = Seq(
   organization := "org.combinators",
@@ -72,6 +73,7 @@ lazy val publishSettings = Seq(
     Developer("BorisDuedder", "Boris Düdder", "boris.d@di.ku.dk", url("http://duedder.net"))
   ),
   publishTo := sonatypePublishToBundle.value,
+  ThisBuild / sonatypeCredentialHost := sonatypeCentralHost,
 ) ++ sys.env.get("PGP_KEY_HEX").map(h => usePgpKeyHex(h)).seq
 
 lazy val noPublishSettings = Seq(
