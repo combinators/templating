@@ -50,9 +50,9 @@ jobs:
       run: |
         git fetch origin master &&
         MASTER=`git rev-parse origin/master` &&
-        echo "::set-output name=head_of_master::$MASTER" &&
+        echo "{head_of_master}={$MASTER}" >> $GITHUB_OUTPUT &&
         CURRENT=`git rev-list -n 1 ${{ github.ref }} || echo "NOT_MASTER"` &&
-        echo "::set-output name=current_job_ref::$CURRENT"
+        run: echo "{current_job_ref}={$CURRENT}" >> $GITHUB_OUTPUT
     - name: Set up JDK
       if: steps.check_head_of_master.outputs.head_of_master == steps.check_head_of_master.outputs.current_job_ref
       uses: actions/setup-java@v6

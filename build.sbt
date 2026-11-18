@@ -7,7 +7,6 @@ lazy val commonSettings = Seq(
   scalaVersion := "3.9.0",
   crossScalaVersions := Seq("2.13.18", "3.3.9", scalaVersion.value),
 
-  resolvers ++= Resolver.sonatypeOssRepos("releases"),
   resolvers += Resolver.typesafeRepo("releases"),
 
   headerLicense := Some(HeaderLicense.ALv2("2017-2026", "Jan Bessai")),
@@ -28,7 +27,7 @@ lazy val commonSettings = Seq(
 ) ++ publishSettings
 
 lazy val root = (Project(id = "templating", base = file(".")))
-    .settings(commonSettings: _*)
+    .settings(commonSettings*)
     .enablePlugins(SbtTwirl)
 
     .settings(
@@ -38,11 +37,11 @@ lazy val root = (Project(id = "templating", base = file(".")))
         "org.scalatest" %% "scalatest" % "3.2.20" % "test",
         "com.github.javaparser" % "javaparser-core" % "3.28.2",
         "org.apache.commons" % "commons-text" % "1.15.0",
-        "commons-io" % "commons-io" % "2.22.0" % "test"
+        "commons-io" % "commons-io" % "2.22.0" % "test",
       ),
 
       Test / TwirlKeys.compileTemplates / sourceDirectories += sourceDirectory.value / "test" / "java-templates",
-      Test / resourceDirectories += sourceDirectory.value / "resources",
+      //Test / resourceDirectories += sourceDirectory.value / "test" / "resources",
       TwirlKeys.templateImports := Seq(),
       TwirlKeys.templateFormats += ("java" -> "org.combinators.templating.twirl.JavaFormat"),
       TwirlKeys.templateImports += "scala.collection.immutable._",
@@ -62,20 +61,20 @@ lazy val root = (Project(id = "templating", base = file(".")))
 
 
 lazy val publishSettings = Seq(
-  homepage := Some(url("https://combinators.org")),
-  licenses := Seq("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-  scmInfo := Some(ScmInfo(url("https://www.github.com/combinators/templating"), "scm:git:git@github.com:combinators/templating.git")),
+  homepage := Some(uri("https://combinators.org")),
+  licenses := Seq("Apache 2" -> uri("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+  scmInfo := Some(ScmInfo(uri("https://www.github.com/combinators/templating"), "scm:git:git@github.com:combinators/templating.git")),
   developers := List(
-    Developer("JanBessai", "Jan Bessai", "jan.bessai@tu-dortmund.de", url("http://noprotocol.net/jan")),
-    Developer("heineman", "George T. Heineman", "heineman@wpi.edu", url("http://www.cs.wpi.edu/~heineman")),
-    Developer("BorisDuedder", "Boris Düdder", "boris.d@di.ku.dk", url("http://duedder.net"))
+    Developer("JanBessai", "Jan Bessai", "jan.bessai@tu-dortmund.de", uri("http://noprotocol.net/jan")),
+    Developer("heineman", "George T. Heineman", "heineman@wpi.edu", uri("http://www.cs.wpi.edu/~heineman")),
+    Developer("BorisDuedder", "Boris Düdder", "boris.d@di.ku.dk", uri("http://duedder.net"))
   ),
   publishTo := {
     val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
     if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
     else localStaging.value
-  }
-) ++ sys.env.get("PGP_KEY_HEX").map(h => usePgpKeyHex(h)).seq
+  },
+) ++ sys.env.get("PGP_KEY_HEX").map(h => usePgpKeyHex(h))
 
 lazy val noPublishSettings = Seq(
   publish := Seq.empty,
