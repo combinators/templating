@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2025 Jan Bessai
+ * Copyright 2017-2026 Jan Bessai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,13 +35,20 @@ class Python private (elements: immutable.Seq[Python], text: String)
 
   /** Indents this fragment by 4 spaces. */
   def indent: Python = {
-    Python(fullText.linesIterator.map(l => s"    $l").mkString(System.lineSeparator()))
+    Python(
+      fullText.linesIterator
+        .map(l => s"    $l")
+        .mkString(System.lineSeparator())
+    )
   }
 
   /** Indents everything except the first line in this fragment by 4 spaces. */
   def indentExceptFirst: Python = {
     val lines: Seq[String] = fullText.linesIterator.to(Seq)
-    Python((lines.head +: lines.tail.map(l => s"    $l")).mkString(System.lineSeparator()))
+    Python(
+      (lines.head +: lines.tail.map(l => s"    $l"))
+        .mkString(System.lineSeparator())
+    )
   }
 
   /** Returns the code of this fragment as a String. */
