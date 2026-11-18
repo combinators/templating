@@ -16,7 +16,11 @@
 
 package org.combinators.templating.persistable
 
-import java.nio.file.{Files, Path, Paths}
+import java.net.{URI, URL}
+import java.nio.file.{FileSystem, FileSystemNotFoundException, FileSystems, Files, Path, Paths}
+import java.util
+import java.util.Collections
+import scala.util.Using
 
 /** A persistable resource on the classpath.
   *
@@ -37,10 +41,33 @@ trait ResourcePersistableInstances {
   def bundledResourceInstance: ResourcePersistable.Aux = new Persistable {
     override type T = BundledResource
     override def path(elem: BundledResource): Path = elem.persistTo
-    override def rawText(elem: BundledResource): Array[Byte] =
-      Files.readAllBytes(
-        Paths.get(elem.classToLoadResource.getResource(elem.name).toURI)
-      )
+
+    def resourcePath(name: String, clazz: Class[?] = getClass): Path = {
+      val url: URL = Option(clazz.getResource(name))
+        .getOrElse(sys.error(s"resource not found: $name"))
+
+      url.getProtocol match {
+        case "file" => Paths.get(url.toURI)
+        case "jar"  =>
+          // split at the first '!' — keeps percent-encoding intact
+          val ext = url.toExternalForm
+          val bang = ext.indexOf('!')
+          val jarUri = java.net.URI.create(ext.substring(0, bang)) // jar:file:/…/foo.jar
+          val entry  = ext.substring(bang + 1)                     // /snapshots/1.json
+          val fs =
+            try FileSystems.newFileSystem(jarUri, new util.HashMap[String, AnyRef]())
+            catch {
+              case _: java.nio.file.FileSystemAlreadyExistsException =>
+                FileSystems.getFileSystem(jarUri)
+            }
+          fs.getPath(entry) // NOT Paths.get(url.toURI)
+        case other => sys.error(s"unsupported protocol $other in $url")
+      }
+    }
+
+    override def rawText(elem: BundledResource): Array[Byte] = {
+      Files.readAllBytes(resourcePath(elem.name, elem.classToLoadResource))
+    }
   }
 }
 
