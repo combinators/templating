@@ -74,7 +74,8 @@ lazy val publishSettings = Seq(
     val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
     if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
     else localStaging.value
-  }
+  },
+  sonatypeCredentialHost := "central.sonatype.com",
 ) ++ sys.env.get("PGP_KEY_HEX").map(h => usePgpKeyHex(h)).seq
 
 lazy val noPublishSettings = Seq(
